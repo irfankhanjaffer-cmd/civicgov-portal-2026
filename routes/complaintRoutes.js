@@ -2,14 +2,25 @@ const express = require('express');
 const router = express.Router();
 const complaintController = require('../controllers/complaintController');
 const multer = require('multer');
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+	storage: multer.memoryStorage(),
+	limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+	fileFilter: (req, file, cb) => {
+		const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+		if (allowedTypes.includes(file.mimetype)) {
+			cb(null, true);
+		} else {
+			cb(new Error('Only JPEG, PNG, and WEBP images are allowed'));
+		}
+	}
+});
 const verifyToken = require('../middleware/authMiddleware');
 
 // --- ROUTE DEFINITIONS ---
 
 // 1. Create Complaint (Public)
 // We apply upload.single('image') HERE to parse the form
-router.post('/', upload.single('image'), complaintController.createComplaint);
+router.post('/', verifyToken, upload.single('image'), complaintController.createComplaint);
 
 // 2. Get All Complaints (Staff/Admin)
 router.get('/', verifyToken, complaintController.getAllComplaints);

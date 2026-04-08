@@ -56,6 +56,10 @@ const complaintSchema = new mongoose.Schema({
         type: String,
         default: '' // Stores the "After" photo uploaded by staff upon resolution
     },
+    resolutionNotes: {
+        type: String,
+        default: ''
+    },
     // --- PHASE 12: ASSIGNMENT LOGIC ---
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
