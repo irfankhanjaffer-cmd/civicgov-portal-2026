@@ -261,10 +261,39 @@ const autoAssignComplaint = async (req, res) => {
     }
 };
 
+const updatePriority = async (req, res) => {
+    try {
+        const { priority } = req.body;
+        const validPriorities = ['Low', 'Medium', 'High', 'Emergency'];
+        if (!validPriorities.includes(priority)) {
+            return res.status(400).json({ message: 'Invalid priority value' });
+        }
+        const complaint = await Complaint.findByIdAndUpdate(
+            req.params.id,
+            { priority },
+            { new: true }
+        );
+        if (!complaint) {
+            return res.status(404).json({ message: 'Complaint not found' });
+        }
+        // Emit real-time update
+        if (global.io) {
+            global.io.emit('priority-updated', {
+                complaintId: complaint._id,
+                priority: complaint.priority
+            });
+        }
+        res.json({ message: 'Priority updated', complaint });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 // Export the functions
 module.exports = {
     createComplaint,
     getAllComplaints,
     updateComplaintStatus,
-    autoAssignComplaint 
+    autoAssignComplaint,
+    updatePriority
 };

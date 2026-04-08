@@ -29,6 +29,8 @@ router.get('/', verifyToken, complaintController.getAllComplaints);
 // PHASE 13 UPDATE: Added upload.single('image') middleware here
 router.put('/:id/resolve', verifyToken, upload.single('image'), complaintController.updateComplaintStatus);
 
+router.put('/:id/set-priority', verifyToken, complaintController.updatePriority);
+
 // --- PHASE 14: AUTO ASSIGN ROUTE ---
 // 4. Auto Assign Ticket (Admin/Smart Dispatch)
 router.post('/:id/assign-auto', verifyToken, complaintController.autoAssignComplaint);
