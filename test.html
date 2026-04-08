@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DB Test</title>
+</head>
+<body>
+    <h1>Check the Console (F12)</h1>
+    <script>
+        // Test Write
+        fetch('http://localhost:5000/test-write', { method: 'POST' })
+          .then(r => r.json())
+          .then(data => console.log('✅ Write Result:', data))
+          .catch(err => console.error('❌ Error:', err));
+
+        // Wait 1 second, then Test Read
+        setTimeout(() => {
+            fetch('http://localhost:5000/test-read')
+              .then(r => r.json())
+              .then(data => console.log('✅ Read Result:', data));
+        }, 1000);
+    </script>
+</body>
+</html>
