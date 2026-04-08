@@ -681,39 +681,138 @@
                 <p style="color: var(--text-muted);">Submit complaints and track your request status.</p>
             </div>
 
+            <style>
+                #service-catalog {
+                    display: grid;
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                    gap: 16px;
+                }
+                #service-catalog .service-card {
+                    background: #ffffff;
+                    border-radius: 16px;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                    color: #1e293b;
+                    padding: 1rem;
+                    transition: transform 0.2s ease;
+                    border: 1px solid var(--border);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.75rem;
+                }
+                #service-catalog .service-name {
+                    color: #1e293b;
+                }
+                #service-catalog .service-desc {
+                    color: #64748b;
+                }
+                #service-catalog .service-card:hover {
+                    transform: translateY(-4px);
+                }
+                #service-catalog .service-book-btn {
+                    margin-top: auto;
+                    background: #3b82f6;
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 0.65rem 0.9rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                }
+                @media (max-width: 768px) {
+                    #service-catalog {
+                        grid-template-columns: 1fr;
+                    }
+                }
+            </style>
+
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Submit New Complaint</h3>
+                    <h3 class="card-title">Book Civic Service</h3>
                 </div>
-                <form id="publicForm">
-                    <div class="flex" style="gap: 20px; margin-bottom: 1rem;">
-                        <div class="form-group" style="flex:1;">
-                            <label class="form-label">Category</label>
-                            <select id="pubCategory">
-                                <option value="Roads">Roads & Traffic</option>
-                                <option value="Water">Water & Sewage</option>
-                                <option value="Electricity">Electricity</option>
-                                <option value="Sanitation">Garbage & Sanitation</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="flex:2;">
-                            <label class="form-label">Location</label>
-                            <input type="text" id="pubLocation" placeholder="Ward 4, Main St." required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Description</label>
-                        <textarea id="pubDesc" placeholder="Describe issue in detail..." required></textarea>
-                    </div>
-                    
-                    <!-- PHASE 6: FILE INPUT -->
-                    <div class="form-group">
-                        <label class="form-label">Upload Photo (Optional)</label>
-                        <input type="file" id="pubImage" accept="image/*">
-                    </div>
 
-                    <button type="submit" class="btn btn-primary">Submit to Government</button>
+                <div id="service-catalog">
+                    <div class="service-card">
+                        <div style="font-size: 1.7rem;">🚧</div>
+                        <h4 class="service-name" style="font-size: 1rem;">Pothole Repair</h4>
+                        <p class="service-desc" style="font-size: 0.9rem;">Road damage & surface issues</p>
+                        <button type="button" class="service-book-btn" onclick="selectService('Pothole Repair', 'Roads')">Book Now</button>
+                    </div>
+                    <div class="service-card">
+                        <div style="font-size: 1.7rem;">💧</div>
+                        <h4 class="service-name" style="font-size: 1rem;">Water Supply</h4>
+                        <p class="service-desc" style="font-size: 0.9rem;">Leaks, pipes & water shortage</p>
+                        <button type="button" class="service-book-btn" onclick="selectService('Water Supply', 'Water')">Book Now</button>
+                    </div>
+                    <div class="service-card">
+                        <div style="font-size: 1.7rem;">⚡</div>
+                        <h4 class="service-name" style="font-size: 1rem;">Electricity</h4>
+                        <p class="service-desc" style="font-size: 0.9rem;">Power cuts & electrical faults</p>
+                        <button type="button" class="service-book-btn" onclick="selectService('Electricity', 'Electricity')">Book Now</button>
+                    </div>
+                    <div class="service-card">
+                        <div style="font-size: 1.7rem;">🗑️</div>
+                        <h4 class="service-name" style="font-size: 1rem;">Garbage Pickup</h4>
+                        <p class="service-desc" style="font-size: 0.9rem;">Waste collection & disposal</p>
+                        <button type="button" class="service-book-btn" onclick="selectService('Garbage Pickup', 'Sanitation')">Book Now</button>
+                    </div>
+                    <div class="service-card">
+                        <div style="font-size: 1.7rem;">🌳</div>
+                        <h4 class="service-name" style="font-size: 1rem;">Park & Greenery</h4>
+                        <p class="service-desc" style="font-size: 0.9rem;">Garden maintenance & trees</p>
+                        <button type="button" class="service-book-btn" onclick="selectService('Park & Greenery', 'Sanitation')">Book Now</button>
+                    </div>
+                    <div class="service-card">
+                        <div style="font-size: 1.7rem;">🔧</div>
+                        <h4 class="service-name" style="font-size: 1rem;">Other Services</h4>
+                        <p class="service-desc" style="font-size: 0.9rem;">Any other civic issue</p>
+                        <button type="button" class="service-book-btn" onclick="selectService('Other Services', 'Other')">Book Now</button>
+                    </div>
+                </div>
+
+                <form id="publicForm" class="hidden">
+                    <div id="booking-form">
+                        <div class="form-group">
+                            <label class="form-label">Selected Service</label>
+                            <input type="text" id="pubServiceName" readonly>
+                        </div>
+
+                        <div class="description-section">
+                            <label class="form-label">Describe the Issue</label>
+
+                            <div id="quick-tags" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                            </div>
+
+                            <textarea id="complaintDesc" rows="4" placeholder="Click tags above or type your issue here..." required></textarea>
+
+                            <button type="button" onclick="aiAssistDescription()" style="margin-top:8px; background:#7c3aed; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;">
+                                ✨ Improve My Description
+                            </button>
+                            <small style="color:#94a3b8; margin-left:8px;">
+                                AI will make it formal and clear
+                            </small>
+                        </div>
+
+                        <input type="hidden" id="complaintPriority" value="Medium">
+
+                        <div class="form-group">
+                            <label class="form-label">Upload Photo (Before)</label>
+                            <input type="file" id="pubImage" accept="image/*">
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" class="btn btn-outline" onclick="captureCitizenLocation()">Use My Location</button>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Location</label>
+                            <input type="text" id="pubLocation" placeholder="Use My Location to capture coordinates" readonly required>
+                        </div>
+
+                        <div class="flex" style="gap: 10px; margin-top: 20px;">
+                            <button type="button" class="btn btn-outline" onclick="backToServices()">Back to Services</button>
+                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -948,6 +1047,8 @@
 
         let staffCaptchaCode = "";
         let citizenCaptchaCode = "";
+        let selectedService = '';
+        let selectedDepartment = '';
         let resolvingTicketId = null; // PHASE 13: Track which ticket is being resolved
         const API_URL = 'http://localhost:5000/api/complaints';
         const ANALYTICS_URL = 'http://localhost:5000/api/analytics/stats';
@@ -1178,10 +1279,100 @@
         // ==========================================
         // 5. COMPLAINT SYSTEM (WITH IMAGE & GEOLOCATION)
         // ==========================================
+        function selectService(serviceName, department) {
+            selectedService = serviceName;
+            selectedDepartment = department;
+            document.getElementById('service-catalog').classList.add('hidden');
+            document.getElementById('publicForm').classList.remove('hidden');
+            document.getElementById('booking-form').classList.remove('hidden');
+            document.getElementById('pubServiceName').value = serviceName;
+            loadQuickTags(serviceName);
+        }
+
+        function loadQuickTags(serviceName) {
+            const tagMap = {
+                'Pothole Repair': ['Large pothole', 'Road cracked', 'Dangerous for vehicles', 'Near school zone'],
+                'Water Supply': ['No water since morning', 'Pipe leaking', 'Dirty water', 'Low pressure'],
+                'Electricity': ['No power', 'Street light broken', 'Wire hanging loose', 'Frequent cuts'],
+                'Garbage Pickup': ['Bin overflowing', 'No collection in 3 days', 'Bad smell', 'Dumping on road'],
+                'Park & Greenery': ['Tree fallen', 'Overgrown grass', 'Broken bench', 'No lighting'],
+                'Other Services': ['Drainage blocked', 'Stray animals', 'Noise complaint', 'Other']
+            };
+            const tags = tagMap[serviceName] || [];
+            const container = document.getElementById('quick-tags');
+            container.innerHTML = tags.map(tag =>
+                `<button type="button" onclick="addTag('${tag}')" 
+        style="background:#e0f2fe; color:#0369a1; border:none; 
+        padding:6px 12px; border-radius:20px; cursor:pointer; font-size:13px;">
+        ${tag}</button>`
+            ).join('');
+        }
+
+        function addTag(tag) {
+            const textarea = document.getElementById('complaintDesc');
+            textarea.value = textarea.value
+                ? textarea.value + ', ' + tag
+                : tag;
+        }
+
+        function aiAssistDescription() {
+            const textarea = document.getElementById('complaintDesc');
+            const raw = textarea.value.trim();
+            const service = selectedService || 'civic issue';
+            if (!raw) {
+                alert('Please describe the issue first or click some tags above.');
+                return;
+            }
+            const formal = `I would like to formally report a ${service} issue at the specified location. ${raw.charAt(0).toUpperCase() + raw.slice(1)}. This matter requires prompt attention from the concerned department. I kindly request immediate action to resolve this issue at the earliest.`;
+            textarea.value = formal;
+        }
+
+        function backToServices() {
+            document.getElementById('publicForm').reset();
+            selectedService = '';
+            selectedDepartment = '';
+            document.getElementById('publicForm').classList.add('hidden');
+            document.getElementById('booking-form').classList.add('hidden');
+            document.getElementById('service-catalog').classList.remove('hidden');
+        }
+
+        async function captureCitizenLocation() {
+            const locationField = document.getElementById('pubLocation');
+            locationField.value = 'Fetching current location...';
+
+            if (!navigator.geolocation) {
+                locationField.value = '';
+                showToast('Geolocation is not supported by this browser.', 'alert');
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude.toFixed(6);
+                    const lng = position.coords.longitude.toFixed(6);
+                    locationField.value = `${lat}, ${lng}`;
+                },
+                () => {
+                    locationField.value = '';
+                    showToast('Could not fetch location. Please allow GPS access.', 'alert');
+                }
+            );
+        }
+
         document.getElementById('publicForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            if (!selectedService || !selectedDepartment) {
+                showToast('Please select a service first.', 'alert');
+                return;
+            }
+
+            if (!document.getElementById('pubLocation').value) {
+                showToast('Please capture your location before submitting.', 'alert');
+                return;
+            }
             
-            const submitBtn = e.target.querySelector('button');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.innerText;
             submitBtn.innerText = "Getting Location...";
             submitBtn.disabled = true;
@@ -1206,16 +1397,18 @@
 
             submitBtn.innerText = "Uploading...";
 
-            const analysis = analyze(document.getElementById('pubDesc').value, document.getElementById('pubCategory').value);
+            const analysis = analyze(document.getElementById('complaintDesc').value, selectedService);
             const imageFile = document.getElementById('pubImage').files[0];
+            const selectedPriority = document.getElementById('complaintPriority').value;
 
             const formData = new FormData();
             formData.append('ticketId', 'T-' + Math.floor(1000 + Math.random() * 9000));
             formData.append('applicantName', currentUser.name);
             formData.append('location', document.getElementById('pubLocation').value);
             formData.append('category', analysis.category);
-            formData.append('description', document.getElementById('pubDesc').value);
-            formData.append('priority', analysis.priority);
+            formData.append('department', selectedDepartment);
+            formData.append('description', document.getElementById('complaintDesc').value);
+            formData.append('priority', selectedPriority);
             formData.append('recommendation', analysis.recommendation);
             formData.append('lat', lat);
             formData.append('lng', lng);
@@ -1227,6 +1420,9 @@
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + authToken
+                    },
                     body: formData
                 });
 
@@ -1234,7 +1430,7 @@
 
                 if (response.ok) {
                     showToast('Complaint Submitted with Location!', 'success');
-                    document.getElementById('publicForm').reset();
+                    backToServices();
                     renderCitizenDashboard(); 
                 } else {
                     showToast('Error: ' + result.message, 'alert');
